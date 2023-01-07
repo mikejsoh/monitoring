@@ -41,4 +41,40 @@ END
 
 systemctl start prometheus
 systemctl enable prometheus
+
+
+wget https://github.com/prometheus/snmp_exporter/releases/download/v0.19.0/snmp_exporter-0.19.0.linux-amd64.tar.gz
+tar xzf snmp_exporter-*.linux-amd64.tar.gz
+rm snmp_exporter-*.linux-amd64.tar.gz
+cd snmp_exporter-*.linux-amd64
+ls -lh
+cp ./snmp_exporter /usr/local/bin/snmp_exporter
+
+mkdir -p /etc/snmp_exporter
+chown -R prometheus:prometheus /etc/snmp_exporter/
+
+cd
+wget https://raw.githubusercontent.com/mikejsoh/monitoring/main/snmp.yml
+cp ./snmp.yml /etc/snmp_exporter/snmp.yml
+
+touch /etc/systemd/system/snmp-exporter.service
+cd /etc/systemd/system/
+tee -a snmp-exporter.service << END
+[Unit]
+Description=Prometheus SNMP Exporter Service
+After=network.target
+
+[Service]
+Type=simple
+User=prometheus
+ExecStart=/usr/local/bin/snmp_exporter --config.file="/etc/snmp_exporter/snmp.yml"
+
+[Install]
+WantedBy=multi-user.target
+END
+
+systemctl start snmp-exporter
+systemctl enable snmp-exporter
+
 systemctl status prometheus
+systemctl status snmp-exporter
