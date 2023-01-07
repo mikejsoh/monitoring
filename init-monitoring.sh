@@ -4,8 +4,9 @@ apt update
 mkdir -p /etc/prometheus
 mkdir -p /var/lib/prometheus
 wget https://github.com/prometheus/prometheus/releases/download/v2.31.0/prometheus-2.31.0.linux-amd64.tar.gz
-tar -xvf prometheus-2.31.3.linux-amd64.tar.gz
-cd prometheus-*
+tar -xvf prometheus-*.linux-amd64.tar.gz
+rm prometheus-*.linux-amd64.tar.gz
+cd prometheus-*.linux-amd64
 mv prometheus promtool /usr/local/bin/
 mv consoles/ console_libraries/ /etc/prometheus/
 mv prometheus.yml /etc/prometheus/prometheus.yml
